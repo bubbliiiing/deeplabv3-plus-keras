@@ -63,7 +63,7 @@ d、利用video.py可进行摄像头检测。
 
 ### 训练步骤
 #### 1、训练voc数据集
-1、将我提供的voc数据集放入VOCdevkit中（无需运行voc2pspnet.py）。  
+1、将我提供的voc数据集放入VOCdevkit中（无需运行voc2deeplab.py）。  
 2、在train.py中设置对应参数，默认参数已经对应voc数据集所需要的参数了，所以只要修改backbone和model_path即可。  
 3、运行train.py进行训练。  
 
