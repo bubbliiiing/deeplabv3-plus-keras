@@ -14,8 +14,8 @@
 ### 性能情况
 | 训练数据集 | 权值文件名称 | 测试数据集 | 输入图片大小 | mIOU | 
 | :-----: | :-----: | :------: | :------: | :------: | 
-| VOC12+SBD | [deeplabv3_mobilenetv2.h5](https://github.com/bubbliiiing/deeplabv3-plus-keras/releases/download/v1.0/deeplabv3_mobilenetv2.h5) | VOC-Val12 | 512x512 | 68.59 | 
-| VOC12+SBD | [deeplabv3_xception.h5](https://github.com/bubbliiiing/deeplabv3-plus-keras/releases/download/v1.0/deeplabv3_xception.h5) | VOC-Val12 | 512x512 | 81.44 | 
+| VOC12+SBD | [deeplabv3_mobilenetv2.h5](https://github.com/bubbliiiing/deeplabv3-plus-keras/releases/download/v1.0/deeplabv3_mobilenetv2.h5) | VOC-Val12 | 512x512 | 72.50 | 
+| VOC12+SBD | [deeplabv3_xception.h5](https://github.com/bubbliiiing/deeplabv3-plus-keras/releases/download/v1.0/deeplabv3_xception.h5) | VOC-Val12 | 512x512 | 87.10 | 
 
 ### 所需环境
 tensorflow==1.13.2
