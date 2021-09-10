@@ -18,7 +18,7 @@
 | VOC12+SBD | [deeplabv3_xception.h5](https://github.com/bubbliiiing/deeplabv3-plus-keras/releases/download/v1.0/deeplabv3_xception.h5) | VOC-Val12 | 512x512 | 87.10 | 
 
 ### 所需环境
-tensorflow==1.13.2
+tensorflow==1.13.2    
 keras==2.1.5
 
 ### 注意事项
