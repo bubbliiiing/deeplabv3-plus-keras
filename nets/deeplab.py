@@ -42,8 +42,8 @@ def SepConv_BN(x, filters, prefix, stride=1, kernel_size=3, rate=1, depth_activa
 
     return x
 
-def Deeplabv3(n_classes, inputs_size, alpha=1., backbone="mobilenet", downsample_factor=16):
-    img_input = Input(shape=inputs_size)
+def Deeplabv3(input_shape, num_classes, alpha=1., backbone="mobilenet", downsample_factor=16):
+    img_input = Input(shape=input_shape)
 
     if backbone=="xception":
         #----------------------------------#
@@ -51,14 +51,14 @@ def Deeplabv3(n_classes, inputs_size, alpha=1., backbone="mobilenet", downsample
         #   浅层特征skip1   [128,128,256]
         #   主干部分x       [30,30,2048]
         #----------------------------------#
-        x, atrous_rates, skip1 = Xception(img_input,alpha, downsample_factor=downsample_factor)
+        x, atrous_rates, skip1 = Xception(img_input, alpha, downsample_factor=downsample_factor)
     elif backbone=="mobilenet":
         #----------------------------------#
         #   获得两个特征层
         #   浅层特征skip1   [128,128,24]
         #   主干部分x       [30,30,320]
         #----------------------------------#
-        x, atrous_rates, skip1 = mobilenetV2(img_input,alpha, downsample_factor=downsample_factor)
+        x, atrous_rates, skip1 = mobilenetV2(img_input, alpha, downsample_factor=downsample_factor)
     else:
         raise ValueError('Unsupported backbone - `{}`, Use mobilenet, xception.'.format(backbone))
 
@@ -132,7 +132,7 @@ def Deeplabv3(n_classes, inputs_size, alpha=1., backbone="mobilenet", downsample
     # 512,512
     size_before3 = tf.keras.backend.int_shape(img_input)
     # 512,512,21
-    x = Conv2D(n_classes, (1, 1), padding='same')(x)
+    x = Conv2D(num_classes, (1, 1), padding='same')(x)
     x = Lambda(lambda xx:tf.image.resize_images(xx,size_before3[1:3], align_corners=True))(x)
     x = Softmax()(x)
 
