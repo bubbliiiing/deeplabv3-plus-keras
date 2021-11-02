@@ -2,6 +2,7 @@ import colorsys
 import copy
 import time
 
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -9,18 +10,18 @@ from nets.deeplab import Deeplabv3
 from utils.utils import cvtColor, preprocess_input, resize_image
 
 
-#--------------------------------------------#
+#-----------------------------------------------------------------------------------#
 #   使用自己训练好的模型预测需要修改3个参数
 #   model_path、backbone和num_classes都需要修改！
-#   如果出现shape不匹配
-#   一定要注意训练时的model_path、
-#   backbone和num_classes数的修改
-#--------------------------------------------#
+#   如果出现shape不匹配，一定要注意训练时的model_path、backbone和num_classes的修改
+#-----------------------------------------------------------------------------------#
 class DeeplabV3(object):
     _defaults = {
-        #----------------------------------------#
+        #-------------------------------------------------------------------#
         #   model_path指向logs文件夹下的权值文件
-        #----------------------------------------#
+        #   训练好后logs文件夹下存在多个权值文件，选择验证集损失较低的即可。
+        #   验证集损失较低不代表miou较高，仅代表该权值在验证集上泛化性能较好。
+        #-------------------------------------------------------------------#
         "model_path"        : 'model_data/deeplabv3_mobilenetv2.h5',
         #----------------------------------------#
         #   所需要区分的类的个数+1
@@ -53,7 +54,6 @@ class DeeplabV3(object):
         self.__dict__.update(self._defaults)
         for name, value in kwargs.items():
             setattr(self, name, value)
-        self.__dict__.update(self._defaults)
         #---------------------------------------------------#
         #   画框设置不同的颜色
         #---------------------------------------------------#
@@ -113,18 +113,22 @@ class DeeplabV3(object):
         #---------------------------------------------------#
         pr = self.model.predict(image_data)[0]
         #---------------------------------------------------#
-        #   取出每一个像素点的种类
-        #---------------------------------------------------#
-        pr = pr.argmax(axis=-1).reshape([self.input_shape[0],self.input_shape[1]])
-        #--------------------------------------#
         #   将灰条部分截取掉
-        #--------------------------------------#
+        #---------------------------------------------------#
         pr = pr[int((self.input_shape[0] - nh) // 2) : int((self.input_shape[0] - nh) // 2 + nh), \
                 int((self.input_shape[1] - nw) // 2) : int((self.input_shape[1] - nw) // 2 + nw)]
+        #---------------------------------------------------#
+        #   进行图片的resize
+        #---------------------------------------------------#
+        pr = cv2.resize(pr, (orininal_w, orininal_h), interpolation = cv2.INTER_LINEAR)
+        #---------------------------------------------------#
+        #   取出每一个像素点的种类
+        #---------------------------------------------------#
+        pr = pr.argmax(axis=-1)
 
-        #------------------------------------------------#
+        #---------------------------------------------------#
         #   创建一副新图，并根据每个像素点的种类赋予颜色
-        #------------------------------------------------#
+        #---------------------------------------------------#
         seg_img = np.zeros((np.shape(pr)[0], np.shape(pr)[1], 3))
         for c in range(self.num_classes):
             seg_img[:,:,0] += ((pr[:,: ] == c )*( self.colors[c][0] )).astype('uint8')
@@ -134,7 +138,7 @@ class DeeplabV3(object):
         #------------------------------------------------#
         #   将新图片转换成Image的形式
         #------------------------------------------------#
-        image = Image.fromarray(np.uint8(seg_img)).resize((orininal_w,orininal_h))
+        image = Image.fromarray(np.uint8(seg_img))
 
         #------------------------------------------------#
         #   将新图片和原图片混合
@@ -163,15 +167,15 @@ class DeeplabV3(object):
         #   图片传入网络进行预测
         #---------------------------------------------------#
         pr = self.model.predict(image_data)[0]
-        #---------------------------------------------------#
-        #   取出每一个像素点的种类
-        #---------------------------------------------------#
-        pr = pr.argmax(axis=-1).reshape([self.input_shape[0],self.input_shape[1]])
         #--------------------------------------#
         #   将灰条部分截取掉
         #--------------------------------------#
         pr = pr[int((self.input_shape[0] - nh) // 2) : int((self.input_shape[0] - nh) // 2 + nh), \
                 int((self.input_shape[1] - nw) // 2) : int((self.input_shape[1] - nw) // 2 + nw)]
+        #---------------------------------------------------#
+        #   取出每一个像素点的种类
+        #---------------------------------------------------#
+        pr = pr.argmax(axis=-1).reshape([self.input_shape[0],self.input_shape[1]])
                 
         t1 = time.time()
         for _ in range(test_interval):
@@ -179,15 +183,15 @@ class DeeplabV3(object):
             #   图片传入网络进行预测
             #---------------------------------------------------#
             pr = self.model.predict(image_data)[0]
-            #---------------------------------------------------#
-            #   取出每一个像素点的种类
-            #---------------------------------------------------#
-            pr = pr.argmax(axis=-1).reshape([self.input_shape[0],self.input_shape[1]])
             #--------------------------------------#
             #   将灰条部分截取掉
             #--------------------------------------#
             pr = pr[int((self.input_shape[0] - nh) // 2) : int((self.input_shape[0] - nh) // 2 + nh), \
                     int((self.input_shape[1] - nw) // 2) : int((self.input_shape[1] - nw) // 2 + nw)]
+            #---------------------------------------------------#
+            #   取出每一个像素点的种类
+            #---------------------------------------------------#
+            pr = pr.argmax(axis=-1).reshape([self.input_shape[0],self.input_shape[1]])
 
         t2 = time.time()
         tact_time = (t2 - t1) / test_interval
@@ -210,19 +214,23 @@ class DeeplabV3(object):
         #---------------------------------------------------------#
         image_data  = np.expand_dims(preprocess_input(np.array(image_data, np.float32)), 0)
 
-        #---------------------------------------------------#
+        #--------------------------------------#
         #   图片传入网络进行预测
-        #---------------------------------------------------#
+        #--------------------------------------#
         pr = self.model.predict(image_data)[0]
-        #---------------------------------------------------#
-        #   取出每一个像素点的种类
-        #---------------------------------------------------#
-        pr = pr.argmax(axis=-1).reshape([self.input_shape[0],self.input_shape[1]])
         #--------------------------------------#
         #   将灰条部分截取掉
         #--------------------------------------#
         pr = pr[int((self.input_shape[0] - nh) // 2) : int((self.input_shape[0] - nh) // 2 + nh), \
                 int((self.input_shape[1] - nw) // 2) : int((self.input_shape[1] - nw) // 2 + nw)]
+        #--------------------------------------#
+        #   进行图片的resize
+        #--------------------------------------#
+        pr = cv2.resize(pr, (orininal_w, orininal_h), interpolation = cv2.INTER_LINEAR)
+        #---------------------------------------------------#
+        #   取出每一个像素点的种类
+        #---------------------------------------------------#
+        pr = pr.argmax(axis=-1)
 
-        image = Image.fromarray(np.uint8(pr)).resize((orininal_w, orininal_h), Image.NEAREST)
+        image = Image.fromarray(np.uint8(pr))
         return image
