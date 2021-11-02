@@ -26,7 +26,7 @@ keras==2.1.5
 
 ### 文件下载
 训练所需的deeplabv3_mobilenetv2.h5和deeplabv3_xception.h5可在百度网盘中下载。    
-链接: https://pan.baidu.com/s/16q2ff_-zwsQVQMGWCPILxA 提取码: m4u3  
+链接: https://pan.baidu.com/s/1HMPUx1Z5nhWzNw7h_WlQbw 提取码: aur4    
 VOC拓展数据集的百度网盘如下：  
 链接: https://pan.baidu.com/s/1BrR7AUM1XJvPWjKMIy2uEw 提取码: vszf   
 
