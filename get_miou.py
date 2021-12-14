@@ -32,7 +32,7 @@ if __name__ == "__main__":
     #   指向VOC数据集所在的文件夹
     #   默认指向根目录下的VOC数据集
     #-------------------------------------------------------#
-    VOCdevkit_path  = 'D:\Study\Collection\Segmentation\Deeplabv3\deeplabv3-plus-tf2-main\VOCdevkit'
+    VOCdevkit_path  = 'VOCdevkit'
 
     image_ids       = open(os.path.join(VOCdevkit_path, "VOC2007/ImageSets/Segmentation/val.txt"),'r').read().splitlines() 
     gt_dir          = os.path.join(VOCdevkit_path, "VOC2007/SegmentationClass/")
