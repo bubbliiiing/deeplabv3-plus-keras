@@ -143,6 +143,3 @@ class DeeplabDataset(keras.utils.Sequence):
         image_data = cv2.cvtColor(image_data, cv2.COLOR_HSV2RGB)
         
         return image_data, label
-
-    def on_epoch_begin(self):
-        shuffle(self.annotation_lines)
