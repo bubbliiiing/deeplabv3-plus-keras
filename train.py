@@ -10,8 +10,8 @@ from keras.optimizers import SGD, Adam
 from keras.regularizers import l2
 
 from nets.deeplab import Deeplabv3
-from nets.deeplab_training import (CE, Focal_Loss, dice_loss_with_CE, get_lr_scheduler,
-                                   dice_loss_with_Focal_Loss)
+from nets.deeplab_training import (CE, Focal_Loss, dice_loss_with_CE,
+                                   dice_loss_with_Focal_Loss, get_lr_scheduler)
 from utils.callbacks import ExponentDecayScheduler, LossHistory
 from utils.dataloader import DeeplabDataset
 from utils.utils_metrics import Iou_score, f_score
