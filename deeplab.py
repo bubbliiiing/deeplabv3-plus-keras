@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 
 from nets.deeplab import Deeplabv3
-from utils.utils import cvtColor, preprocess_input, resize_image
+from utils.utils import cvtColor, preprocess_input, resize_image, show_config
 
 
 #-----------------------------------------------------------------------------------#
@@ -75,6 +75,8 @@ class DeeplabV3(object):
         #   获得模型
         #---------------------------------------------------#
         self.generate()
+
+        show_config(**self._defaults)
 
     #---------------------------------------------------#
     #   获得所有的分类
